@@ -1,0 +1,10 @@
+{
+  "name": "nodeServer",
+  "version": "0.0.0",
+  "description": "nodeServer",
+  "main": "app.js",
+  "author": {
+    "name": "RDCP01",
+    "email": ""
+  }
+}

@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "nodeServer", "nodeServer\nodeServer.njsproj", "{2825F81B-7C76-44AC-90E0-96C8CD6E372A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary1", "ClassLibrary1\ClassLibrary1.csproj", "{26273406-84CF-4883-8CC6-E284EFBA123C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary2", "ClassLibrary2\ClassLibrary2.csproj", "{A8B8A0CD-A5D2-4DDA-A619-118A4688B626}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{2D01C061-73C2-4835-AB23-42D225DEE47D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{26771ECF-12CF-48BC-A1A0-0491814B59BC}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "nodeClient", "NodejsConsoleApp1\nodeClient.njsproj", "{E4294C0B-8953-47B7-9F6F-B1E422D2C45E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2825F81B-7C76-44AC-90E0-96C8CD6E372A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2825F81B-7C76-44AC-90E0-96C8CD6E372A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2825F81B-7C76-44AC-90E0-96C8CD6E372A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2825F81B-7C76-44AC-90E0-96C8CD6E372A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26273406-84CF-4883-8CC6-E284EFBA123C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26273406-84CF-4883-8CC6-E284EFBA123C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26273406-84CF-4883-8CC6-E284EFBA123C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26273406-84CF-4883-8CC6-E284EFBA123C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8B8A0CD-A5D2-4DDA-A619-118A4688B626}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8B8A0CD-A5D2-4DDA-A619-118A4688B626}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8B8A0CD-A5D2-4DDA-A619-118A4688B626}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8B8A0CD-A5D2-4DDA-A619-118A4688B626}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D01C061-73C2-4835-AB23-42D225DEE47D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D01C061-73C2-4835-AB23-42D225DEE47D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D01C061-73C2-4835-AB23-42D225DEE47D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D01C061-73C2-4835-AB23-42D225DEE47D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4294C0B-8953-47B7-9F6F-B1E422D2C45E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4294C0B-8953-47B7-9F6F-B1E422D2C45E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4294C0B-8953-47B7-9F6F-B1E422D2C45E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4294C0B-8953-47B7-9F6F-B1E422D2C45E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

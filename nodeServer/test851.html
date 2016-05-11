@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+video {
+	border: solid 1px #6699cc;
+	border-radius: 10px;
+	padding: 15px 15px 15px 15px;
+}
+</style>
+<script src='js/jquery-1.8.2.js'></script>
+<script src='/ws.io/ws.io.js'></script>
+<script>
+var socket = io.connect('ws://localhost:8443');
+	var localStream,remoteStream;
+	var pc = null;
+var echo = io.connect('ws://localhost:8443/echo');
+echo.on('echo', function(data) {
+	alert(data);
+});
+setTimeout(function(){echo.emit('echo', 'hello echo')}, 1000);
+$(document).ready(function() {
+	$('#btnStart').click(function() {
+		navigator.webkitGetUserMedia({video:true,audio:true}, function(stream) {
+			localStream = stream;
+			$('#local').attr('src', webkitURL.createObjectURL(stream));
+		}, function(info) {
+			console.log('getUserMedia Error:' + info);
+		});
+		this.disabled = true;
+		$('#btnCall').attr('disabled', false);
+	});
+	$('#btnCall').click(function() {
+		this.disable = true;
+		$('#btnHangup').attr('disabled', false);
+		pc = new webkitRTCPeerConnection(null);
+		pc.onaddstream = function(e) {
+			remoteStream = e.stream;
+			$('#remote').attr('src', webkitURL.createObjectURL(e.stream));
+			$('#btnHangup').attr('disabled', false);
+		};
+		pc.onicecandidate = function(e) {
+			if(!!e.candidate) {
+				socket.emit('ice', {candidate: e.candidate});
+			}
+		};
+		pc.addStream(localStream);
+		pc.createOffer(function(sdp) {
+			console.log('createOffer', sdp);
+			pc.setLocalDescription(sdp, function() {
+				console.log('after setLocalDescription');
+				socket.emit('offer', {sdp:sdp});
+			});
+		}, function() {
+			console.log('create offer error.');
+		},{has_video:true,has_audio:true});
+	});
+	$('#btnHangup').click(function() {
+		this.disable = true;
+		pc.close();
+		pc = null;
+		socket.emit('hangup',{});
+		$(this).attr('disabled', true);
+		$('#btnCall').attr('disabled', false);
+	});
+	socket.on('ice', function(data) {
+		console.log(data.candidate);
+		console.log('socket on ice: ', getIceStateDesc(pc.iceState));
+		pc.addIceCandidate(new RTCIceCandidate(data.candidate));
+	});
+	socket.on('offer', function(data) {
+		pc = new webkitRTCPeerConnection(null);
+		pc.onaddstream = function(e) {
+			remoteStream = e.stream;
+			$('#remote').attr('src', webkitURL.createObjectURL(e.stream));
+			$('#btnHangup').attr('disabled', false);
+		};
+		pc.onicecandidate = function(e) {
+			if(!!e.candidate) {
+				socket.emit('ice', {candidate: e.candidate});
+			}
+		};
+		pc.addStream(localStream);
+		var offer = new RTCSessionDescription(data.sdp);
+		pc.setRemoteDescription(offer, function() {
+			//pc.createAnswer is different from w3c webrtc standard api
+			console.log('set remote description');
+			pc.createAnswer(function(sdp) {
+				console.log('createAnswer', sdp);
+				pc.setLocalDescription(sdp, function() {
+					console.log('set local description');
+					socket.emit('answer', {sdp:sdp});
+				}, function(e) {
+					console.log('set local description error: '+e);
+				});
+			}, function(e) {
+				console.log('create answer error: '+e);
+			}, {has_video:true,has_audio:true});
+		}, function(e) {
+			console.log('set remote description error: '+e);
+		});
+	});
+	socket.on('answer', function(data) {
+		console.log('on answer triggered');
+		pc.setRemoteDescription(new RTCSessionDescription(data.sdp));
+	});
+	socket.on('hangup', function() {
+		$('#btnHangup').attr('disabled', true);
+		$('#btnCall').attr('disabled', false);
+		pc.close();
+		pc = null;
+	});
+	function getIceStateDesc(state) {
+		switch(state) {
+			case 0x100:
+				return 'ICE_GATHERING';
+				break;
+			case 0x200:
+				return 'ICE_WAITING';
+				break;
+			case 0x300:
+				return 'ICE_CHECKING';
+				break;
+			case 0x400:
+				return 'ICE_CONNECTED';
+				break;
+			case 0x500:
+				return 'ICE_COMPLETED';
+				break;
+			case 0x600:
+				return 'ICE_FAILED';
+				break;
+			case 0x700:
+				return 'ICE_CLOSED';
+				break;
+			default:
+				return '';
+		}
+	}
+});
+</script>
+</head>
+<body>
+	<div>
+		<legend>Start a video conference</legend>
+		<video id="local" width="320" autoplay></video>
+		<video id="remote" width="320" autoplay></video><br>
+		<button class="btn" id="btnStart">start</button>
+		<button class="btn" id="btnCall" disabled>call</button>
+		<button class="btn" id="btnHangup" disabled>hangup</button>
+	</div>
+</body>
+</html>

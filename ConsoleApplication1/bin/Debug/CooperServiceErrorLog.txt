@@ -1,0 +1,1 @@
+﻿[2015/4/29 上午 09:09]Cannot open file d:\cooper\patient.dbf.

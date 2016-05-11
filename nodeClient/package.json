@@ -1,0 +1,10 @@
+{
+  "name": "nodeClient",
+  "version": "0.0.0",
+  "description": "nodeClient",
+  "main": "server.js",
+  "author": {
+    "name": "RDCP01",
+    "email": ""
+  }
+}

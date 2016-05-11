@@ -1,0 +1,103 @@
+<html>
+<body>
+<b>test is my first test</b>
+</body>
+</html>
+<script>
+    function initiateCall(user) {
+        document.getElementById("main").style.display = "none";
+        document.getElementById("call").style.display = "block";
+
+        // Here's where you ask user permission to access the camera and microphone streams
+        navigator.mozGetUserMedia({ video: true, audio: true }, function (stream) {
+            document.getElementById("localvideo").mozSrcObject = stream;
+            document.getElementById("localvideo").play();
+            document.getElementById("localvideo").muted = true;
+
+            // Here's where you set up a Firefox PeerConnection
+            var pc = new mozRTCPeerConnection();
+            pc.addStream(stream);
+
+            pc.onaddstream = function (obj) {
+                log("Got onaddstream of type " + obj.type);
+                document.getElementById("remotevideo").mozSrcObject = obj.stream;
+                document.getElementById("remotevideo").play();
+                document.getElementById("dialing").style.display = "none";
+                document.getElementById("hangup").style.display = "block";
+            };
+
+            pc.createOffer(function (offer) {
+                log("Created offer" + JSON.stringify(offer));
+                pc.setLocalDescription(offer, function () {
+                    // Send offer to remote end.
+                    log("setLocalDescription, sending to remote");
+                    peerc = pc;
+                    jQuery.post(
+                      "offer", {
+                          to: user,
+                          from: document.getElementById("user").innerHTML,
+                          offer: JSON.stringify(offer)
+                      },
+                      function () { console.log("Offer sent!"); }
+                    ).error(error);
+                }, error);
+            }, error);
+        }, error);
+    }
+
+    function acceptCall(offer) {
+        log("Incoming call with offer " + offer);
+        document.getElementById("main").style.display = "none";
+        document.getElementById("call").style.display = "block";
+
+        // Here's where you ask user permission to access the camera and microphone streams
+        navigator.mozGetUserMedia({ video: true, audio: true }, function (stream) {
+            document.getElementById("localvideo").mozSrcObject = stream;
+            document.getElementById("localvideo").play();
+            document.getElementById("localvideo").muted = true;
+
+            // Here's where you set up a Firefox PeerConnection
+            var pc = new mozRTCPeerConnection();
+            pc.addStream(stream);
+
+            pc.onaddstream = function (obj) {
+                document.getElementById("remotevideo").mozSrcObject = obj.stream;
+                document.getElementById("remotevideo").play();
+                document.getElementById("dialing").style.display = "none";
+                document.getElementById("hangup").style.display = "block";
+            };
+
+            pc.setRemoteDescription(JSON.parse(offer.offer), function () {
+                log("setRemoteDescription, creating answer");
+                pc.createAnswer(function (answer) {
+                    pc.setLocalDescription(answer, function () {
+                        // Send answer to remote end.
+                        log("created Answer and setLocalDescription " + JSON.stringify(answer));
+                        peerc = pc;
+                        jQuery.post(
+                          "answer", {
+                              to: offer.from,
+                              from: offer.to,
+                              answer: JSON.stringify(answer)
+                          },
+                          function () { console.log("Answer sent!"); }
+                        ).error(error);
+                    }, error);
+                }, error);
+            }, error);
+        }, error);
+    }
+
+    function endCall() {
+        log("Ending call");
+        document.getElementById("call").style.display = "none";
+        document.getElementById("main").style.display = "block";
+
+        document.getElementById("localvideo").mozSrcObject.stop();
+        document.getElementById("localvideo").mozSrcObject = null;
+        document.getElementById("remotevideo").mozSrcObject = null;
+
+        peerc.close();
+        peerc = null;
+    }
+</script>
